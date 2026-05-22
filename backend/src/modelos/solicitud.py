@@ -137,6 +137,24 @@ class Solicitud(BaseModel):
         return self
 
 
+class SolicitudFactory:
+    """Centraliza la construccion de entidades Solicitud."""
+
+    @staticmethod
+    def desde_derivacion(
+        payload: DerivacionInput,
+        fecha_ingreso: datetime,
+        fecha_maxima_respuesta: datetime,
+    ) -> Solicitud:
+        return Solicitud(
+            usuario_id=payload.usuario_id,
+            detalle_solicitud=payload.detalle_solicitud,
+            dependencia_asignada=payload.dependencia_asignada,
+            fecha_ingreso=fecha_ingreso,
+            fecha_maxima_respuesta=fecha_maxima_respuesta,
+        )
+
+
 OBSERVACIONES_MAX_LENGTH: int = 500
 
 
