@@ -11,11 +11,10 @@ import time
 from functools import lru_cache
 from threading import Lock
 
-from src.config import settings
 from src.excepciones.errors import VotoDuplicadoError
 from src.logging_config import get_logger
 from src.modelos.voto import VotoCifrado, VotoInput
-from src.utilidades.algoritmo_genetico import AlgoritmoGenetico, Mutacion
+from src.utilidades.algoritmo_genetico import obtener_algoritmo
 from src.utilidades.cifrado import aplicar_hash_sha256
 
 logger = get_logger(__name__)
@@ -83,9 +82,4 @@ class VotoService:
 @lru_cache(maxsize=1)
 def get_voto_service() -> VotoService:
     """Provee una instancia singleton del servicio (DI para FastAPI)."""
-    algoritmo = AlgoritmoGenetico(
-        tamano_poblacion=settings.ga_population_size,
-        longitud_llave=settings.ga_key_length,
-        mutacion=Mutacion(tasa=settings.ga_mutation_rate),
-    )
-    return VotoService(algoritmo=algoritmo)
+    return VotoService(algoritmo=obtener_algoritmo())
