@@ -14,6 +14,7 @@ from __future__ import annotations
 import secrets
 import string
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Final
 
 _ALFABETO: Final[str] = string.ascii_uppercase
@@ -147,3 +148,14 @@ class AlgoritmoGenetico:
         hijo: Cromosoma = Cruce.aplicar(padre1, padre2)
         hijo_mutado: Cromosoma = self.mutacion.aplicar(hijo)
         return hijo_mutado.genes
+
+
+@lru_cache(maxsize=1)
+def obtener_algoritmo() -> AlgoritmoGenetico:
+    from src.config import settings  # importacion diferida para evitar ciclos
+
+    return AlgoritmoGenetico(
+        tamano_poblacion=settings.ga_population_size,
+        longitud_llave=settings.ga_key_length,
+        mutacion=Mutacion(tasa=settings.ga_mutation_rate),
+    )
