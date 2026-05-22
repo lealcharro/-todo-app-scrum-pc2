@@ -24,8 +24,8 @@ from src.excepciones.errors import (
 from src.logging_config import get_logger
 from src.modelos.solicitud import (
     DerivacionInput,
-    EstadoSolicitud,
     Solicitud,
+    SolicitudFactory,
 )
 
 logger = get_logger(__name__)
@@ -103,13 +103,10 @@ class SolicitudService:
         ahora: datetime = datetime.now(tz=timezone.utc)
         fecha_maxima: datetime = _calcular_fecha_maxima(ahora)
 
-        solicitud: Solicitud = Solicitud(
-            usuario_id=payload.usuario_id,
-            detalle_solicitud=payload.detalle_solicitud,
-            dependencia_asignada=payload.dependencia_asignada,
+        solicitud: Solicitud = SolicitudFactory.desde_derivacion(
+            payload=payload,
             fecha_ingreso=ahora,
             fecha_maxima_respuesta=fecha_maxima,
-            estado=EstadoSolicitud.PENDIENTE,
         )
 
         with self._lock:
